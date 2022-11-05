@@ -23,5 +23,21 @@ class StoreItemController {
 
         return searchResponse.results
     }
+    
+    func fetchImage(from url: URL) async throws -> UIImage {
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpsResponse = response as? HTTPURLResponse,
+              httpsResponse.statusCode == 200 else {
+            throw StoreItemError.itemsNotFound
+        }
+        
+        guard let image = UIImage(data: data) else {
+            throw StoreItemError.imageDataMissing
+        }
+        
+        return image
+    }
 
 }

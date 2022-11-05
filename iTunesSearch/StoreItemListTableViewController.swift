@@ -68,8 +68,19 @@ class StoreItemListTableViewController: UITableViewController {
         // initialize a network task to fetch the item's artwork keeping track of the task
         // in imageLoadTasks so they can be cancelled if the cell will not be shown after
         // the task completes.
-        //
+        imageLoadTasks[indexPath] = Task {
+            do {
+                let image = try await storeItemController.fetchImage(from: item.artworkURL)
+                cell.artworkImage = image
+            } catch {
+                print("Error fetching image: \(error)")
+            }
+            
+            imageLoadTasks[indexPath] = nil
+        }
         // if successful, set the cell.artworkImage using the returned image
+        
+        
     }
     
     @IBAction func filterOptionUpdated(_ sender: UISegmentedControl) {
